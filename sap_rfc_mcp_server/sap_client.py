@@ -5,7 +5,15 @@ import os
 from contextlib import contextmanager
 from typing import Any, Dict, Generator, List, Optional
 
-import pyrfc
+# Try to import pyrfc - make it optional for development
+try:
+    import pyrfc
+    PYRFC_AVAILABLE = True
+    Connection = pyrfc.Connection
+except ImportError:
+    pyrfc = None
+    PYRFC_AVAILABLE = False
+    Connection = Any
 
 from .config import SAPConfig
 from .secure_config import SAPConfigManager, SecurityError
@@ -24,6 +32,12 @@ class SAPRFCManager:
     
     def __init__(self, config: Optional[SAPConfig] = None):
         """Initialize with SAP configuration using secure methods."""
+        if not PYRFC_AVAILABLE:
+            raise SAPConnectionError(
+                "pyrfc module is not available. Please install SAP NetWeaver RFC SDK and pyrfc package. "
+                "See README.md for installation instructions."
+            )
+            
         if config is None:
             try:
                 config = SAPConfigManager.get_config("auto")
@@ -33,7 +47,7 @@ class SAPRFCManager:
                 raise SAPConnectionError(f"SAP configuration error: {e}")
         
         self.config = config
-        self._connection: Optional[pyrfc.Connection] = None
+        self._connection = None  # Optional[Connection] when pyrfc is available
         
         # Set up SAP RFC environment
         self._setup_environment()
@@ -48,8 +62,13 @@ class SAPRFCManager:
             os.environ["PATH"] = f"{sap_lib_path};{os.environ.get('PATH', '')}"
     
     @contextmanager
-    def connection(self) -> Generator[pyrfc.Connection, None, None]:
+    def connection(self):  # -> Generator[Connection, None, None] when pyrfc is available
         """Context manager for SAP RFC connection."""
+        if not PYRFC_AVAILABLE:
+            raise SAPConnectionError(
+                "pyrfc module is not available. Please install SAP NetWeaver RFC SDK and pyrfc package."
+            )
+            
         conn = None
         try:
             logger.info("Establishing SAP RFC connection...")

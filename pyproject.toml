@@ -28,7 +28,7 @@ classifiers = [
 requires-python = ">=3.9"
 dependencies = [
     "mcp>=1.0.0",
-    "pyrfc>=3.3",
+    # "pyrfc>=3.3",  # Commented out for development - requires SAP NetWeaver RFC SDK
     "click>=8.0.0",
     "fastapi>=0.104.0",
     "uvicorn[standard]>=0.24.0",
@@ -38,6 +38,9 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
+sap = [
+    "pyrfc>=3.3",  # Requires SAP NetWeaver RFC SDK to be installed first
+]
 dev = [
     "pytest>=7.0.0",
     "pytest-asyncio>=0.21.0",

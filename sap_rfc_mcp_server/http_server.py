@@ -24,8 +24,15 @@ from .sap_client import SAPRFCManager, SAPConnectionError
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# Initialize SAP client
-sap_client = SAPRFCManager()
+# Initialize SAP client lazily
+sap_client = None
+
+def _get_sap_client():
+    """Get or create SAP client instance."""
+    global sap_client
+    if sap_client is None:
+        sap_client = SAPRFCManager()
+    return sap_client
 
 # Create FastAPI app with lifespan
 @asynccontextmanager
@@ -146,7 +153,7 @@ async def handle_call_tool(name: str, arguments: dict) -> list[TextContent]:
     try:
         if name == "rfc_system_info":
             result = await asyncio.get_event_loop().run_in_executor(
-                None, sap_client.get_system_info
+                None, _get_sap_client().get_system_info
             )
             return [
                 TextContent(
@@ -161,7 +168,7 @@ async def handle_call_tool(name: str, arguments: dict) -> list[TextContent]:
             limit = arguments.get("limit", 100)
             
             result = await asyncio.get_event_loop().run_in_executor(
-                None, sap_client.get_rfc_functions, funcs_mask, devclass
+                None, _get_sap_client().get_rfc_functions, funcs_mask, devclass
             )
             
             # Apply limit
@@ -181,7 +188,7 @@ async def handle_call_tool(name: str, arguments: dict) -> list[TextContent]:
             parameters = arguments.get("parameters", {})
             
             result = await asyncio.get_event_loop().run_in_executor(
-                None, sap_client.call_rfc_function, function_name, **parameters
+                None, _get_sap_client().call_rfc_function, function_name, **parameters
             )
             
             return [
@@ -256,7 +263,7 @@ async def health_check():
     try:
         # Quick SAP connection test
         system_info = await asyncio.get_event_loop().run_in_executor(
-            None, sap_client.get_system_info
+            None, _get_sap_client().get_system_info
         )
         return {
             "status": "healthy",
@@ -325,7 +332,7 @@ def _call_rfc_read_table(table_name: str, fields: List[dict], options: List[dict
     if rowcount > 0:
         params["ROWCOUNT"] = rowcount
     
-    return sap_client.call_rfc_function("RFC_READ_TABLE", **params)
+    return _get_sap_client().call_rfc_function("RFC_READ_TABLE", **params)
 
 
 async def stream_table_data(table_name: str, fields: List[str] = None, 

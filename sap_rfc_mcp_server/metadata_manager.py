@@ -3,7 +3,15 @@
 import logging
 import os
 from typing import Dict, Any, Optional, List
-import pyrfc
+
+# Try to import pyrfc - make it optional for development
+try:
+    import pyrfc
+    PYRFC_AVAILABLE = True
+except ImportError:
+    pyrfc = None
+    PYRFC_AVAILABLE = False
+
 from .metadata_cache import RFCMetadataCache
 
 logger = logging.getLogger(__name__)
@@ -23,10 +31,16 @@ class RFCMetadataManager:
             cache_dir: Directory for cache storage
             default_language: Default language for descriptions
         """
+        if not PYRFC_AVAILABLE:
+            raise ImportError(
+                "pyrfc module is not available. Please install SAP NetWeaver RFC SDK and pyrfc package. "
+                "See README.md for installation instructions."
+            )
+            
         self.connection_params = connection_params
         self.default_language = default_language
         self.cache = RFCMetadataCache(cache_dir)
-        self._connection: Optional[pyrfc.Connection] = None
+        self._connection = None  # Optional[pyrfc.Connection] when available
         self._sap_version: Optional[str] = None
         self._version_category: Optional[str] = None
         
@@ -137,7 +151,7 @@ class RFCMetadataManager:
             self._sap_version = "Unknown"
             self._version_category = "R/3 4.5"  # Default to most restrictive for safety
     
-    def _get_connection(self) -> pyrfc.Connection:
+    def _get_connection(self):
         """Get or create SAP connection."""
         if self._connection is None:
             try:
@@ -217,7 +231,7 @@ class RFCMetadataManager:
         
         return metadata
     
-    def _get_function_info(self, conn: pyrfc.Connection, func_name: str) -> Dict[str, Any]:
+    def _get_function_info(self, conn, func_name: str) -> Dict[str, Any]:
         """Get basic function information from INFO_FUNCT table."""
         options = [{'TEXT': f"FUNCNAME = '{func_name}' AND ACTIVE = 'X' AND FMODE = 'R'"}]
         fields = [
@@ -252,7 +266,7 @@ class RFCMetadataManager:
             logger.error(f"Error retrieving function info for {func_name}: {e}")
             raise
     
-    def _get_function_interface(self, conn: pyrfc.Connection, 
+    def _get_function_interface(self, conn, 
                               func_name: str, language: str) -> Dict[str, Any]:
         """Get function interface information."""
         try:
@@ -278,7 +292,7 @@ class RFCMetadataManager:
                 logger.error(f"Error retrieving function interface for {func_name}: {e}")
                 raise
     
-    def _process_parameters(self, conn: pyrfc.Connection, 
+    def _process_parameters(self, conn, 
                           params: List[Dict[str, Any]]) -> tuple:
         """Process function parameters and build metadata."""
         inputs, outputs, tables = {}, {}, {}
@@ -312,7 +326,7 @@ class RFCMetadataManager:
         
         return inputs, outputs, tables
     
-    def _get_parameter_metadata(self, conn: pyrfc.Connection, 
+    def _get_parameter_metadata(self, conn, 
                               param: Dict[str, Any]) -> Dict[str, Any]:
         """Get detailed metadata for a parameter."""
         # Initialize metadata
@@ -350,7 +364,7 @@ class RFCMetadataManager:
         
         return metadata
     
-    def _get_field_metadata(self, conn: pyrfc.Connection, 
+    def _get_field_metadata(self, conn, 
                            table_name: str, field_name: str = '') -> Dict[str, Any]:
         """Get field metadata using DDIF_FIELDINFO_GET."""
         try:
@@ -389,7 +403,7 @@ class RFCMetadataManager:
             logger.error(f"Error retrieving field metadata for {table_name}.{field_name}: {e}")
             return {}
     
-    def _get_data_element_metadata(self, conn: pyrfc.Connection, 
+    def _get_data_element_metadata(self, conn, 
                                  param: Dict[str, Any]) -> Dict[str, Any]:
         """Get data element metadata from DD04V table."""
         try:
