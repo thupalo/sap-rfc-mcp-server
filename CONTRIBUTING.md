@@ -24,7 +24,7 @@ Thank you for your interest in contributing to the SAP RFC MCP Server! This docu
 
 ```bash
 # Clone your fork
-git clone https://github.com/yourusername/sap-rfc-mcp-server.git
+git clone https://github.com/thupalo/sap-rfc-mcp-server.git
 cd sap-rfc-mcp-server
 
 # Create virtual environment
@@ -355,7 +355,7 @@ Include:
 ## 📞 Getting Help
 
 ### Development Questions
-- 💬 [GitHub Discussions](https://github.com/yourusername/sap-rfc-mcp-server/discussions)
+- 💬 [GitHub Discussions](https://github.com/thupalo/sap-rfc-mcp-server/discussions)
 - 📧 Email: dev@sap-rfc-mcp.example.com
 
 ### SAP-Specific Questions

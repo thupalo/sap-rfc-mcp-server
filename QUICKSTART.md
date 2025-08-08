@@ -17,7 +17,7 @@ The quickest way to get started:
 
 ```bash
 # 1. Clone or download the project
-git clone https://github.com/yourusername/sap-rfc-mcp-server.git
+git clone https://github.com/thupalo/sap-rfc-mcp-server.git
 cd sap-rfc-mcp-server
 
 # 2. Run the automated setup script

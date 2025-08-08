@@ -63,7 +63,7 @@ __version__ = "1.0.0"
 __author__ = "SAP RFC MCP Server Team"
 __email__ = "sap-rfc-mcp@example.com"
 __description__ = "Model Context Protocol server for SAP RFC function calls"
-__url__ = "https://github.com/yourusername/sap-rfc-mcp-server"
+__url__ = "https://github.com/thupalo/sap-rfc-mcp-server"
 
 # Public API
 __all__ = [

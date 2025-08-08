@@ -59,11 +59,11 @@ docs = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/yourusername/sap-rfc-mcp-server"
-Documentation = "https://github.com/yourusername/sap-rfc-mcp-server/docs"
-Repository = "https://github.com/yourusername/sap-rfc-mcp-server"
-Issues = "https://github.com/yourusername/sap-rfc-mcp-server/issues"
-Changelog = "https://github.com/yourusername/sap-rfc-mcp-server/blob/main/CHANGELOG.md"
+Homepage = "https://github.com/thupalo/sap-rfc-mcp-server"
+Documentation = "https://github.com/thupalo/sap-rfc-mcp-server/docs"
+Repository = "https://github.com/thupalo/sap-rfc-mcp-server"
+Issues = "https://github.com/thupalo/sap-rfc-mcp-server/issues"
+Changelog = "https://github.com/thupalo/sap-rfc-mcp-server/blob/main/CHANGELOG.md"
 
 [project.scripts]
 sap-rfc-mcp-server = "sap_rfc_mcp_server.server:main"

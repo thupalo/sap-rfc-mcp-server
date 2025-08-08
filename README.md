@@ -54,7 +54,7 @@ Download and install the SAP NetWeaver RFC SDK from SAP Service Marketplace:
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/sap-rfc-mcp-server.git
+git clone https://github.com/thupalo/sap-rfc-mcp-server.git
 cd sap-rfc-mcp-server
 
 # Install dependencies
@@ -256,8 +256,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ### Getting Help
 - 📧 Email: sap-rfc-mcp@example.com
-- 🐛 [Report Issues](https://github.com/yourusername/sap-rfc-mcp-server/issues)
-- 💬 [Discussions](https://github.com/yourusername/sap-rfc-mcp-server/discussions)
+- 🐛 [Report Issues](https://github.com/thupalo/sap-rfc-mcp-server/issues)
+- 💬 [Discussions](https://github.com/thupalo/sap-rfc-mcp-server/discussions)
 
 ## 🔄 Changelog
 
