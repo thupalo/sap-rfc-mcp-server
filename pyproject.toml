@@ -39,7 +39,7 @@ dependencies = [
 
 [project.optional-dependencies]
 sap = [
-    "pyrfc>=3.3",  # Requires SAP NetWeaver RFC SDK to be installed first
+    "pyrfc==3.3.1",  # Requires SAP NetWeaver RFC SDK to be installed first
 ]
 dev = [
     "pytest>=7.0.0",
