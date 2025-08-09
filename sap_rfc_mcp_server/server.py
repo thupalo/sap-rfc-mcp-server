@@ -3,22 +3,25 @@
 import asyncio
 import json
 import logging
-from typing import Any, Dict, List, Optional, Sequence
+from typing import Any, Dict, List, Optional
 
+from collections.abc import Sequence
+
+import mcp.server.stdio
 from mcp.server import Server
 from mcp.server.models import InitializationOptions
 from mcp.server.stdio import stdio_server
 from mcp.types import (
-    Resource,
-    Tool,
-    TextContent,
-    ImageContent,
     EmbeddedResource,
-    LoggingLevel
+    ImageContent,
+    LoggingLevel,
+    Resource,
+    TextContent,
+    Tool,
 )
-import mcp.server.stdio
 
-from .sap_client import SAPRFCManager, SAPConnectionError
+from .sap_client import SAPConnectionError, SAPRFCManager
+
 try:
     from .metadata_manager import RFCMetadataManager
 except ImportError:
@@ -71,11 +74,7 @@ async def handle_list_tools() -> list[Tool]:
         Tool(
             name="rfc_system_info",
             description="Get SAP system information using RFC_SYSTEM_INFO",
-            inputSchema={
-                "type": "object",
-                "properties": {},
-                "required": []
-            }
+            inputSchema={"type": "object", "properties": {}, "required": []},
         ),
         Tool(
             name="get_rfc_functions",
@@ -85,15 +84,15 @@ async def handle_list_tools() -> list[Tool]:
                 "properties": {
                     "funcs_mask": {
                         "type": "string",
-                        "description": "Function name mask (supports wildcards with *)"
+                        "description": "Function name mask (supports wildcards with *)",
                     },
                     "devclass": {
-                        "type": "string", 
-                        "description": "Development class filter"
-                    }
+                        "type": "string",
+                        "description": "Development class filter",
+                    },
                 },
-                "required": []
-            }
+                "required": [],
+            },
         ),
         Tool(
             name="call_rfc_function",
@@ -103,15 +102,15 @@ async def handle_list_tools() -> list[Tool]:
                 "properties": {
                     "function_name": {
                         "type": "string",
-                        "description": "Name of the RFC function to call"
+                        "description": "Name of the RFC function to call",
                     },
                     "parameters": {
                         "type": "object",
-                        "description": "Function parameters as key-value pairs"
-                    }
+                        "description": "Function parameters as key-value pairs",
+                    },
                 },
-                "required": ["function_name"]
-            }
+                "required": ["function_name"],
+            },
         ),
         Tool(
             name="get_function_metadata",
@@ -121,20 +120,20 @@ async def handle_list_tools() -> list[Tool]:
                 "properties": {
                     "function_name": {
                         "type": "string",
-                        "description": "Name of the RFC function"
+                        "description": "Name of the RFC function",
                     },
                     "language": {
                         "type": "string",
                         "description": "Language for descriptions (EN, DE, PL, etc.)",
-                        "default": "EN"
+                        "default": "EN",
                     },
                     "force_refresh": {
                         "type": "boolean",
-                        "description": "Force refresh from SAP system (ignore cache)"
-                    }
+                        "description": "Force refresh from SAP system (ignore cache)",
+                    },
                 },
-                "required": ["function_name"]
-            }
+                "required": ["function_name"],
+            },
         ),
         Tool(
             name="search_rfc_functions",
@@ -144,27 +143,23 @@ async def handle_list_tools() -> list[Tool]:
                 "properties": {
                     "query": {
                         "type": "string",
-                        "description": "Search query (keywords to search for)"
+                        "description": "Search query (keywords to search for)",
                     },
                     "limit": {
                         "type": "integer",
                         "description": "Maximum number of results to return",
                         "default": 20,
                         "minimum": 1,
-                        "maximum": 100
-                    }
+                        "maximum": 100,
+                    },
                 },
-                "required": ["query"]
-            }
+                "required": ["query"],
+            },
         ),
         Tool(
             name="get_metadata_cache_stats",
             description="Get statistics about the RFC metadata cache",
-            inputSchema={
-                "type": "object",
-                "properties": {},
-                "required": []
-            }
+            inputSchema={"type": "object", "properties": {}, "required": []},
         ),
         Tool(
             name="bulk_load_metadata",
@@ -175,16 +170,16 @@ async def handle_list_tools() -> list[Tool]:
                     "function_names": {
                         "type": "array",
                         "items": {"type": "string"},
-                        "description": "List of RFC function names to load metadata for"
+                        "description": "List of RFC function names to load metadata for",
                     },
                     "language": {
                         "type": "string",
                         "description": "Language for descriptions (EN, DE, PL, etc.)",
-                        "default": "EN"
-                    }
+                        "default": "EN",
+                    },
                 },
-                "required": ["function_names"]
-            }
+                "required": ["function_names"],
+            },
         ),
         Tool(
             name="export_metadata_for_rag",
@@ -195,12 +190,12 @@ async def handle_list_tools() -> list[Tool]:
                     "output_file": {
                         "type": "string",
                         "description": "Output file path for RAG export",
-                        "default": "rfc_metadata_rag.json"
+                        "default": "rfc_metadata_rag.json",
                     }
                 },
-                "required": []
-            }
-        )
+                "required": [],
+            },
+        ),
     ]
 
 
@@ -212,143 +207,110 @@ async def handle_call_tool(name: str, arguments: dict) -> list[TextContent]:
             result = await asyncio.get_event_loop().run_in_executor(
                 None, _get_sap_client().get_system_info
             )
-            return [
-                TextContent(
-                    type="text",
-                    text=json.dumps(result, indent=2)
-                )
-            ]
-        
+            return [TextContent(type="text", text=json.dumps(result, indent=2))]
+
         elif name == "get_rfc_functions":
             funcs_mask = arguments.get("funcs_mask")
             devclass = arguments.get("devclass")
-            
+
             result = await asyncio.get_event_loop().run_in_executor(
                 None, _get_sap_client().get_rfc_functions, funcs_mask, devclass
             )
-            
-            return [
-                TextContent(
-                    type="text",
-                    text=json.dumps(result, indent=2)
-                )
-            ]
-        
+
+            return [TextContent(type="text", text=json.dumps(result, indent=2))]
+
         elif name == "call_rfc_function":
             function_name = arguments["function_name"]
             parameters = arguments.get("parameters", {})
-            
+
             result = await asyncio.get_event_loop().run_in_executor(
                 None, _get_sap_client().call_rfc_function, function_name, **parameters
             )
-            
-            return [
-                TextContent(
-                    type="text",
-                    text=json.dumps(result, indent=2)
-                )
-            ]
-        
+
+            return [TextContent(type="text", text=json.dumps(result, indent=2))]
+
         elif name == "get_function_metadata":
             function_name = arguments["function_name"]
             language = arguments.get("language", "EN")
             force_refresh = arguments.get("force_refresh", False)
-            
+
             metadata_mgr = _get_metadata_manager()
             result = await asyncio.get_event_loop().run_in_executor(
-                None, metadata_mgr.get_function_metadata, function_name, language, force_refresh
+                None,
+                metadata_mgr.get_function_metadata,
+                function_name,
+                language,
+                force_refresh,
             )
-            
+
             return [
                 TextContent(
-                    type="text",
-                    text=json.dumps(result, indent=2, ensure_ascii=False)
+                    type="text", text=json.dumps(result, indent=2, ensure_ascii=False)
                 )
             ]
-        
+
         elif name == "search_rfc_functions":
             query = arguments["query"]
             limit = arguments.get("limit", 20)
-            
+
             metadata_mgr = _get_metadata_manager()
             result = await asyncio.get_event_loop().run_in_executor(
                 None, metadata_mgr.search_functions, query, limit
             )
-            
+
             return [
                 TextContent(
                     type="text",
-                    text=json.dumps({
-                        "query": query,
-                        "limit": limit,
-                        "functions": result
-                    }, indent=2)
+                    text=json.dumps(
+                        {"query": query, "limit": limit, "functions": result}, indent=2
+                    ),
                 )
             ]
-        
+
         elif name == "get_metadata_cache_stats":
             metadata_mgr = _get_metadata_manager()
             result = await asyncio.get_event_loop().run_in_executor(
                 None, metadata_mgr.get_cache_stats
             )
-            
-            return [
-                TextContent(
-                    type="text",
-                    text=json.dumps(result, indent=2)
-                )
-            ]
-        
+
+            return [TextContent(type="text", text=json.dumps(result, indent=2))]
+
         elif name == "bulk_load_metadata":
             function_names = arguments["function_names"]
             language = arguments.get("language", "EN")
-            
+
             metadata_mgr = _get_metadata_manager()
             result = await asyncio.get_event_loop().run_in_executor(
                 None, metadata_mgr.bulk_load_metadata, function_names, language
             )
-            
+
             return [
                 TextContent(
-                    type="text",
-                    text=json.dumps(result, indent=2, ensure_ascii=False)
+                    type="text", text=json.dumps(result, indent=2, ensure_ascii=False)
                 )
             ]
-        
+
         elif name == "export_metadata_for_rag":
             output_file = arguments.get("output_file", "rfc_metadata_rag.json")
-            
+
             metadata_mgr = _get_metadata_manager()
             await asyncio.get_event_loop().run_in_executor(
                 None, metadata_mgr.export_for_rag, output_file
             )
-            
+
             return [
-                TextContent(
-                    type="text",
-                    text=f"Metadata exported to {output_file}"
-                )
+                TextContent(type="text", text=f"Metadata exported to {output_file}")
             ]
-        
+
         else:
             raise ValueError(f"Unknown tool: {name}")
-    
+
     except SAPConnectionError as e:
         logger.error(f"SAP connection error in tool {name}: {e}")
-        return [
-            TextContent(
-                type="text",
-                text=f"SAP Connection Error: {str(e)}"
-            )
-        ]
+        return [TextContent(type="text", text=f"SAP Connection Error: {str(e)}")]
     except Exception as e:
         logger.error(f"Error in tool {name}: {e}")
-        return [
-            TextContent(
-                type="text",
-                text=f"Error: {str(e)}"
-            )
-        ]
+        return [TextContent(type="text", text=f"Error: {str(e)}")]
 
 
 async def main():
@@ -361,10 +323,10 @@ async def main():
                 server_name="sap-rfc-mcp-server",
                 server_version="0.2.0",
                 capabilities=server.get_capabilities(
-                    notification_options=None,
-                    experimental_capabilities=None,
-                )
-            )
+                    notification_options=mcp.server.NotificationOptions(),
+                    experimental_capabilities={},
+                ),
+            ),
         )
 
 

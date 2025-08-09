@@ -176,3 +176,5 @@ desktop.ini
 private_key.*
 public_key.*
 .secrets/
+.secure
+*.secure
