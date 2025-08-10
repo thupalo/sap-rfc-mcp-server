@@ -178,3 +178,6 @@ public_key.*
 .secrets/
 .secure
 *.secure
+
+# Sandbox and development folders
+z_sandbox/

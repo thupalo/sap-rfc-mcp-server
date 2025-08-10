@@ -3,9 +3,8 @@
 import asyncio
 import json
 import logging
-from typing import Any, Dict, List, Optional
-
 from collections.abc import Sequence
+from typing import Any, Dict, List, Optional
 
 import mcp.server.stdio
 from mcp.server import Server
@@ -20,6 +19,7 @@ from mcp.types import (
     Tool,
 )
 
+from .rfc_table_reader import RFCTableReader
 from .sap_client import SAPConnectionError, SAPRFCManager
 
 try:
@@ -35,6 +35,7 @@ logger = logging.getLogger(__name__)
 # Initialize global variables
 sap_client = None
 metadata_manager = None
+table_reader = None
 
 # Create MCP server
 server = Server("sap-rfc-mcp-server")
@@ -46,6 +47,14 @@ def _get_sap_client():
     if sap_client is None:
         sap_client = SAPRFCManager()
     return sap_client
+
+
+def _get_table_reader():
+    """Get or create table reader instance."""
+    global table_reader
+    if table_reader is None:
+        table_reader = RFCTableReader(_get_sap_client())
+    return table_reader
 
 
 def _get_metadata_manager():
@@ -196,6 +205,111 @@ async def handle_list_tools() -> list[Tool]:
                 "required": [],
             },
         ),
+        Tool(
+            name="read_table",
+            description="Read data from SAP table with automatic buffer overflow protection",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "table_name": {
+                        "type": "string",
+                        "description": "Name of the SAP table to read",
+                    },
+                    "fields": {
+                        "type": "array",
+                        "items": {"type": "string"},
+                        "description": "List of field names to retrieve (optional, auto-selected fields if not specified)",
+                    },
+                    "where_conditions": {
+                        "type": "array",
+                        "items": {"type": "string"},
+                        "description": "WHERE conditions for filtering (optional)",
+                    },
+                    "max_rows": {
+                        "type": "integer",
+                        "description": "Maximum number of rows to retrieve",
+                        "default": 100,
+                        "minimum": 1,
+                        "maximum": 1000,
+                    },
+                    "delimiter": {
+                        "type": "string",
+                        "description": "Field delimiter for output",
+                        "default": "|",
+                    },
+                },
+                "required": ["table_name"],
+            },
+        ),
+        Tool(
+            name="read_table_complete",
+            description="Read table with all requested fields using iterative method to avoid buffer overflow",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "table_name": {
+                        "type": "string",
+                        "description": "Name of the SAP table to read",
+                    },
+                    "fields": {
+                        "type": "array",
+                        "items": {"type": "string"},
+                        "description": "List of field names to retrieve (will be split across multiple calls if needed)",
+                    },
+                    "where_conditions": {
+                        "type": "array",
+                        "items": {"type": "string"},
+                        "description": "WHERE conditions for filtering (optional)",
+                    },
+                    "max_rows": {
+                        "type": "integer",
+                        "description": "Maximum number of rows to retrieve",
+                        "default": 100,
+                        "minimum": 1,
+                        "maximum": 1000,
+                    },
+                    "delimiter": {
+                        "type": "string",
+                        "description": "Field delimiter for output",
+                        "default": "|",
+                    },
+                },
+                "required": ["table_name"],
+            },
+        ),
+        Tool(
+            name="get_table_structure",
+            description="Get the structure/metadata of an SAP table using DDIF_FIELDINFO_GET",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "table_name": {
+                        "type": "string",
+                        "description": "Name of the SAP table",
+                    },
+                    "language": {
+                        "type": "string",
+                        "description": "Language for field descriptions (EN, DE, PL, etc.)",
+                        "default": "EN",
+                    },
+                },
+                "required": ["table_name"],
+            },
+        ),
+        Tool(
+            name="test_table_access",
+            description="Test if a table is accessible and return basic information",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "table_name": {
+                        "type": "string",
+                        "description": "Name of the SAP table to test",
+                    },
+                },
+                "required": ["table_name"],
+            },
+        ),
     ]
 
 
@@ -301,6 +415,90 @@ async def handle_call_tool(name: str, arguments: dict) -> list[TextContent]:
             return [
                 TextContent(type="text", text=f"Metadata exported to {output_file}")
             ]
+
+        elif name == "read_table":
+            table_name = arguments["table_name"]
+            fields = arguments.get("fields", [])
+            where_conditions = arguments.get("where_conditions", [])
+            max_rows = arguments.get("max_rows", 100)
+            delimiter = arguments.get("delimiter", "|")
+
+            # Use enhanced table reader with DATA_BUFFER_EXCEEDED protection
+            result = await asyncio.get_event_loop().run_in_executor(
+                None,
+                _get_table_reader().read_table_safe,
+                table_name,
+                fields if fields else None,
+                where_conditions if where_conditions else None,
+                max_rows,
+                delimiter,
+            )
+
+            return [TextContent(type="text", text=json.dumps(result, indent=2))]
+
+        elif name == "read_table_complete":
+            table_name = arguments["table_name"]
+            fields = arguments.get("fields", [])
+            where_conditions = arguments.get("where_conditions", [])
+            max_rows = arguments.get("max_rows", 100)
+            delimiter = arguments.get("delimiter", "|")
+
+            # Use iterative table reader for complete field access
+            result = await asyncio.get_event_loop().run_in_executor(
+                None,
+                _get_table_reader().read_table_iterative,
+                table_name,
+                fields if fields else None,
+                where_conditions if where_conditions else None,
+                max_rows,
+                delimiter,
+            )
+
+            return [TextContent(type="text", text=json.dumps(result, indent=2))]
+
+        elif name == "get_table_structure":
+            table_name = arguments["table_name"]
+            language = arguments.get("language", "EN")
+
+            result = await asyncio.get_event_loop().run_in_executor(
+                None,
+                _get_sap_client().call_rfc_function,
+                "DDIF_FIELDINFO_GET",
+                TABNAME=table_name,
+                LANGU=language,
+            )
+
+            return [TextContent(type="text", text=json.dumps(result, indent=2))]
+
+        elif name == "test_table_access":
+            table_name = arguments["table_name"]
+
+            # Test with minimal read
+            test_result = {"table_name": table_name, "access_test": "testing..."}
+
+            try:
+                result = await asyncio.get_event_loop().run_in_executor(
+                    None,
+                    _get_sap_client().call_rfc_function,
+                    "RFC_READ_TABLE",
+                    QUERY_TABLE=table_name,
+                    DELIMITER="|",
+                    ROWCOUNT=1,
+                )
+
+                test_result["access_test"] = "[OK] ACCESSIBLE"
+                test_result["field_count"] = len(result.get("FIELDS", []))
+                test_result["has_data"] = len(result.get("DATA", [])) > 0
+                test_result["sample_fields"] = [
+                    f["FIELDNAME"] for f in result.get("FIELDS", [])[:10]
+                ]
+
+            except Exception as e:
+                test_result["access_test"] = "[ERROR] NOT ACCESSIBLE"
+                test_result["error"] = str(e)
+                test_result["error_type"] = type(e).__name__
+
+            return [TextContent(type="text", text=json.dumps(test_result, indent=2))]
 
         else:
             raise ValueError(f"Unknown tool: {name}")

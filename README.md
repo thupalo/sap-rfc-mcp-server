@@ -20,6 +20,12 @@ A Model Context Protocol (MCP) server that provides seamless integration with SA
 - **Bulk Operations**: Parallel loading and processing of multiple functions
 - **RAG Optimization**: Export metadata in formats optimized for Retrieval-Augmented Generation
 
+### Advanced Development Tools
+- **Port Management**: Automatic port conflict detection and resolution
+- **Smart Startup**: Intelligent server startup with process management
+- **VS Code Integration**: Complete development environment with tasks and snippets
+- **Table Access Tools**: Enhanced SAP table operations with comprehensive error handling
+
 ### Language Support
 - **Multi-Language**: Support for English, Polish, German, French, Spanish descriptions
 - **Version-Aware Language Handling**: Automatic detection of SAP version and appropriate language code mapping
@@ -45,12 +51,27 @@ A Model Context Protocol (MCP) server that provides seamless integration with SA
 
 ## 🛠 Installation
 
-### 1. Install SAP NetWeaver RFC SDK
+### Automated Setup (Recommended)
+
+```bash
+# Clone the repository
+git clone https://github.com/thupalo/sap-rfc-mcp-server.git
+cd sap-rfc-mcp-server
+
+# Automated development environment setup (includes SAP NetWeaver RFC SDK validation)
+python tools/setup_dev.py
+```
+
+> **🔍 Enhanced Setup**: The automated setup now includes comprehensive SAP NetWeaver RFC SDK validation and provides detailed troubleshooting guidance if prerequisites are not met.
+
+### Manual Installation
+
+#### 1. Install SAP NetWeaver RFC SDK
 
 Download and install the SAP NetWeaver RFC SDK from SAP Service Marketplace:
 - [SAP NW RFC SDK Download](https://support.sap.com/en/product/connectors/nwrfcsdk.html)
 
-### 2. Install Python Package
+#### 2. Install Python Package
 
 ```bash
 # Clone the repository
@@ -64,7 +85,7 @@ pip install -e .
 pip install -e ".[dev]"
 ```
 
-### 3. Configure SAP Connection
+#### 3. Configure SAP Connection
 
 Create a `.env` file in the project root:
 
@@ -85,23 +106,48 @@ SAP_TRACE=0
 
 ## 🚀 Quick Start
 
-### MCP Server (for AI Assistants)
+### Smart Server Startup (Recommended)
+
+```bash
+# Intelligent startup with automatic port management
+python tools/start_mcp_smart.py
+
+# Alternative PowerShell startup
+.\tools\start_sap_mcp_server.ps1 -Mode http -Port 8000
+```
+
+### Manual Server Startup
+
+#### MCP Server (for AI Assistants)
 
 ```bash
 # Start the MCP server
-sap-rfc-mcp-server
+python -m sap_rfc_mcp_server.server
 
 # The server will be available via stdio for MCP clients
 ```
 
-### HTTP Server (for Web Applications)
+#### HTTP Server (for Web Applications)
 
 ```bash
 # Start the HTTP server
-sap-rfc-mcp-http-server
+python -m sap_rfc_mcp_server.http_server 127.0.0.1 8000
 
 # Server will be available at http://localhost:8000
 # API documentation at http://localhost:8000/docs
+```
+
+### Port Management
+
+```bash
+# Check port availability
+python tools/port_manager.py --suggest
+
+# Check specific port
+python tools/port_manager.py --check 8000
+
+# Release MCP processes
+python tools/port_manager.py --release-mcp 8000 8020
 ```
 
 ### Python API Usage
@@ -129,7 +175,7 @@ metadata_manager = RFCMetadataManager(
 
 # Get function metadata with caching
 metadata = metadata_manager.get_function_metadata(
-    "RFC_READ_TABLE", 
+    "RFC_READ_TABLE",
     language="EN"
 )
 
@@ -143,46 +189,99 @@ bulk_metadata = metadata_manager.bulk_load_metadata(functions, language="EN")
 
 ## 📖 Documentation
 
-### API Reference
-- [MCP Tools Documentation](docs/mcp-tools.md)
-- [HTTP API Reference](docs/http-api.md)
-- [Python API Documentation](docs/python-api.md)
+### 📁 Project Structure
+```
+sap-rfc-mcp-server/
+├── sap_rfc_mcp_server/     # Main application package
+├── tools/                  # Development tools and utilities
+│   ├── start_mcp_smart.py         # Smart server startup
+│   ├── port_manager.py            # Port management utility
+│   ├── sap_dev_helper.py          # Development helper tools
+│   ├── setup_dev.py               # Environment setup
+│   └── README.md                  # Tools documentation
+├── docs/                   # Technical documentation
+│   ├── VSCODE_INTEGRATION_GUIDE.md
+│   ├── PORT_MANAGEMENT_GUIDE.md
+│   ├── TABLE_ACCESS_REPAIR_SUMMARY.md
+│   └── README.md                  # Documentation index
+├── tests/                  # Unit and integration tests
+├── examples/               # Usage examples
+└── README.md              # This file
+```
 
-### Configuration
-- [SAP Connection Configuration](docs/sap-configuration.md)
-- [Security and Encryption](docs/security.md)
-- [Environment Variables](docs/environment.md)
+### 🛠️ Development Tools
+- **[Tools README](tools/README.md)** - Complete guide to development utilities
+- **[Port Management Guide](docs/PORT_MANAGEMENT_GUIDE.md)** - Server and port management
+- **[VS Code Integration](docs/VSCODE_INTEGRATION_GUIDE.md)** - Development environment setup
 
-### Advanced Usage
-- [Metadata Management](docs/metadata-management.md)
-- [Caching Strategy](docs/caching.md)
-- [Version Compatibility](docs/version-compatibility.md)
+### 📚 Technical Documentation
+- **[Documentation Index](docs/README.md)** - Complete documentation overview
+- **[Table Access Guide](docs/TABLE_ACCESS_REPAIR_SUMMARY.md)** - SAP table operations
+- **[Integration Success](docs/INTEGRATION_SUCCESS.md)** - Project achievements
 
 ## 🧪 Testing
 
+### Automated Testing
+
 ```bash
-# Run all tests
-pytest
+# Run comprehensive table access verification
+python tools/test_table_access_verification.py
+
+# Test development tools
+python tools/sap_dev_helper.py --system-info
+python tools/sap_dev_helper.py --test-table T000
+
+# Run unit tests
+pytest tests/
 
 # Run with coverage
 pytest --cov=sap_rfc_mcp_server
+```
 
-# Run specific test categories
-pytest -m unit          # Unit tests only
-pytest -m integration   # Integration tests only
-pytest -m "not slow"    # Skip slow tests
+### Development Environment Testing
+
+```bash
+# Test VS Code integration
+python test_vscode_integration.py
+
+# Verify SAP connection
+python test_direct_sap.py
+
+# Test MCP server functionality
+python test_metadata_stdio.py
 ```
 
 ## 🔧 Development
 
-### Setup Development Environment
+### Quick Development Setup
+
+```bash
+# Automated setup (recommended)
+python tools/setup_dev.py
+
+# Manual VS Code setup
+code .  # Open in VS Code
+# Select Python interpreter: ./venv/Scripts/python.exe
+```
+
+### Development Tools Usage
+
+```bash
+# Port management
+python tools/port_manager.py --help
+
+# Development helpers
+python tools/sap_dev_helper.py --help
+
+# Smart server startup
+python tools/start_mcp_smart.py
+```
+
+### Code Quality
 
 ```bash
 # Install development dependencies
 pip install -e ".[dev]"
-
-# Install pre-commit hooks
-pre-commit install
 
 # Run code formatting
 black sap_rfc_mcp_server tests
