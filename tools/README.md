@@ -17,7 +17,6 @@ This directory contains development tools and utilities for the SAP RFC MCP Serv
 - **`check_sapnwrfc_sdk.py`** - SAP NetWeaver RFC SDK installation validation
 
 ### [TEST] Testing and Verification
-- **`test_table_access_verification.py`** - Comprehensive SAP table access testing
 - **`test_direct_sap.py`** - Direct SAP RFC connection testing with RFC_SYSTEM_INFO validation
 - **`test_metadata_performance_http_stdio.py`** - Performance testing for metadata caching (HTTP & STDIO)
 - **`test_metadata_stdio.py`** - STDIO-only RFC function metadata testing
@@ -94,9 +93,6 @@ python tools/check_sapnwrfc_sdk.py
 
 ### Testing and Verification
 ```bash
-# Run comprehensive table access tests
-python tools/test_table_access_verification.py
-
 # Test direct SAP RFC connection with system info
 python tools/test_direct_sap.py
 

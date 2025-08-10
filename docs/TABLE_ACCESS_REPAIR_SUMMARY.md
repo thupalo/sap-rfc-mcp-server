@@ -18,7 +18,7 @@ Through systematic testing, we discovered:
 
 1. **✅ Direct pyrfc works perfectly** - T000 table fully accessible
 2. **✅ SAP authorization is correct** - SAPRFC user has proper table read permissions
-3. **✅ SAP connectivity is working** - Connection to PRO/02/005 successful
+3. **✅ SAP connectivity is working** - Connection successful
 4. **⚠️ MCP server layer had limited table tools** - Missing dedicated table access functions
 
 ## Implemented Fixes
@@ -65,7 +65,7 @@ Added three new dedicated table access tools to `sap_rfc_mcp_server/server.py`:
 ### ✅ Working Functionality
 | Test | Status | Details |
 |------|--------|---------|
-| SAP Connection | ✅ Working | Direct connection to PRO/02/005 successful |
+| SAP Connection | ✅ Working | Direct connection successful |
 | RFC_SYSTEM_INFO | ✅ Working | System info retrieval successful |
 | T000 Table Access | ✅ Working | Full table read with 17 fields, 4 client records |
 | Selective Fields | ✅ Working | MANDT/MTEXT retrieval successful |
@@ -78,7 +78,7 @@ Added three new dedicated table access tools to `sap_rfc_mcp_server/server.py`:
 ```
 Client 000: SAP AG (Walldorf)
 Client 001: Auslieferungsmandant R11 (Kundstadt)
-Client 005: MANDANT PRODUKTYWNY FI (WARSZAWA)
+Client 010: MANDANT PRODUKTYWNY FI (WARSZAWA)
 Client 066: EarlyWatch (Walldorf)
 ```
 
@@ -157,8 +157,7 @@ Some tables may require additional authorization:
 ### Core Testing Scripts
 1. **`test_direct_t000_with_config.py`**: Direct pyrfc testing
 2. **`test_mcp_rfc_read_table.py`**: MCP client layer testing
-3. **`test_table_access_verification.py`**: Comprehensive verification
-4. **`test_table_tools_stdio.py`**: Enhanced tools testing
+3. **`test_table_tools_stdio.py`**: Enhanced tools testing
 
 ### Diagnostic Scripts
 1. **`check_sap_connection.py`**: Connection verification
@@ -180,7 +179,7 @@ python -m sap_rfc_mcp_server.http_server 127.0.0.1 8080
 
 ### Configuration
 - **Environment**: Uses .env file for SAP connection parameters
-- **Connection**: PRO system (sapik/02/005) with SAPRFC user
+- **Connection**: PRO system with SAPRFC user
 - **Security**: Secure password handling via environment variables
 
 ## Resolution Summary

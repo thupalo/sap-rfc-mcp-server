@@ -8,11 +8,11 @@
 ## Test Results
 
 ### 🔗 Connection Status
-- **System**: PRO (sapik/02/005)
+- **System**: ***
 - **User**: SAPRFC
 - **Status**: ✅ Direct pyrfc connection successful
 - **RFC_SYSTEM_INFO**: ✅ Working
-- **Destination**: sapik_PRO_02
+- **Destination**: *********
 
 ### 📊 Table Access Results
 
@@ -42,7 +42,7 @@
 |--------|-------------|------|----------|----------|
 | 000 | SAP AG | Walldorf | DEM | S (System) |
 | 001 | Auslieferungsmandant R11 | Kundstadt | USD | C (Customizing) |
-| 005 | MANDANT PRODUKTYWNY FI | WARSZAWA | PLN | P (Production) |
+| 010 | MANDANT PRODUKTYWNY FI | WARSZAWA | PLN | P (Production) |
 | 066 | EarlyWatch | Walldorf | DEM | S (System) |
 
 ### 🎯 Specific Tests Performed
@@ -82,18 +82,6 @@
 4. **Custom Functions**: Consider using BAPI or custom RFC functions for data access
 
 ## Technical Details
-
-### Working Connection Parameters
-```python
-{
-    'user': 'SAPRFC',
-    'ashost': 'sapik',
-    'sysnr': '02',
-    'client': '005',
-    'lang': 'EN',
-    'trace': '0'
-}
-```
 
 ### Successful RFC Calls
 ```python

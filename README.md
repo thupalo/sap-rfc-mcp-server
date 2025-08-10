@@ -224,9 +224,6 @@ sap-rfc-mcp-server/
 ### Automated Testing
 
 ```bash
-# Run comprehensive table access verification
-python tools/test_table_access_verification.py
-
 # Test development tools
 python tools/sap_dev_helper.py --system-info
 python tools/sap_dev_helper.py --test-table T000
@@ -242,13 +239,13 @@ pytest --cov=sap_rfc_mcp_server
 
 ```bash
 # Test VS Code integration
-python test_vscode_integration.py
+python tools/test_vscode_integration.py
 
 # Verify SAP connection
-python test_direct_sap.py
+python tools/test_direct_sap.py
 
 # Test MCP server functionality
-python test_metadata_stdio.py
+python tools/test_metadata_stdio.py
 ```
 
 ## 🔧 Development

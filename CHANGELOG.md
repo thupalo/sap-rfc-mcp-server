@@ -101,7 +101,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Migration Guides
 
 ### From 0.x to 1.0
-- Update configuration format (see [Migration Guide](docs/migration-v1.md))
+- Update configuration format
 - Review MCP tool names (some have been renamed for consistency)
 - Update HTTP API calls (minor endpoint changes)
 - Regenerate encrypted configuration files

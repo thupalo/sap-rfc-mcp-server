@@ -150,20 +150,14 @@ python examples/basic_usage.py
 pytest tests/ -v
 ```
 
-### 4. Enhanced Table Reading Test
-```bash
-# Test the new buffer overflow protection
-python tools/test_table_access_verification.py
-```
-
-### 5. API Documentation Test
+### 4. API Documentation Test
 ```bash
 # Start HTTP server and test API docs
 ./tools/start_sap_mcp_server.ps1
 # Then visit: http://localhost:8000/docs
 ```
 
-### 6. MCP Server Test (Optional)
+### 5. MCP Server Test (Optional)
 ```bash
 # Test MCP server stdio mode (requires MCP client)
 ./tools/start_sap_mcp_server.ps1 -Mode stdio
