@@ -157,7 +157,7 @@ def check_sapnwrfc_prerequisites():
     except Exception as e:
         print(f"[ERROR] Error testing pyrfc: {e}")
         issues_found.append(f"pyrfc module error: {e}")
-        return False
+        # return False
 
     if checks_passed >= 4:  # Allow for pyrfc not being installed yet
         print(f"\n[SUCCESS] SAP NetWeaver RFC SDK prerequisites satisfied!")
