@@ -2,6 +2,8 @@
 
 This guide will help you set up the SAP RFC MCP server as a development tool in VS Code with GitHub Copilot for SAP data retrieval and development assistance.
 
+> **📋 First-time setup?** For comprehensive installation including prerequisites and troubleshooting, see the [**Complete Setup Guide**](COMPLETE_SETUP_GUIDE.md).
+
 ## [COMPASS] Overview
 
 The SAP RFC MCP server can be integrated with VS Code in several ways:
@@ -383,6 +385,8 @@ for user in users.get('data', []):
 ```
 
 ## [WRENCH] Troubleshooting
+
+> **🔧 Need comprehensive troubleshooting?** See the [**Detailed Troubleshooting Guide**](TROUBLESHOOTING.md) for advanced solutions and diagnostics.
 
 ### Common Issues and Solutions
 
