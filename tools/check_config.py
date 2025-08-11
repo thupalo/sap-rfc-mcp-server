@@ -6,10 +6,13 @@ Check current SAP configuration
 import os
 import sys
 
-# Add parent directory to path since we're in tools folder
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-
-from sap_rfc_mcp_server.config import SAPConfig  # noqa: E402
+# Better approach for tools scripts - try direct import first
+try:
+    from sap_rfc_mcp_server.config import SAPConfig
+except ImportError:
+    # If direct import fails, add parent directory to path
+    sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    from sap_rfc_mcp_server.config import SAPConfig
 
 print("[CONFIG] Current SAP Configuration Analysis")
 print("=" * 45)

@@ -32,7 +32,8 @@ A Model Context Protocol (MCP) server that provides seamless integration with SA
 - **Legacy Compatibility**: Proper handling of single-letter language codes for older SAP systems (R/3 4.5B)
 
 ### Security & Configuration
-- **Secure Configuration**: Encrypted storage of SAP connection parameters
+- **Interactive Security Manager**: Secure credential setup with multiple storage methods (encrypted files, system keyring, environment variables)
+- **Secure Configuration**: Encrypted storage of SAP connection parameters with automatic method detection
 - **Environment Variables**: Support for secure credential management
 - **Connection Pooling**: Efficient connection management and reuse
 
@@ -87,7 +88,30 @@ pip install -e ".[dev]"
 
 #### 3. Configure SAP Connection
 
-Create a `.env` file in the project root:
+**🔐 Recommended: Interactive Security Manager (Preferred Method)**
+
+The SAP Security Manager provides secure, interactive configuration with multiple storage options:
+
+```bash
+# Interactive setup with secure credential management
+python -m sap_rfc_mcp_server.sap_security_manager setup
+
+# Test your configuration with connection validation
+python -m sap_rfc_mcp_server.sap_security_manager test
+
+# View your security configuration status
+python -m sap_rfc_mcp_server.sap_security_manager info
+```
+
+**Available Security Methods:**
+- **Environment Variables**: Direct system environment (always available)
+- **.env Files**: File-based configuration (requires python-dotenv)
+- **System Keyring**: OS credential manager (requires keyring package)
+- **Encrypted Files**: Password-protected encrypted storage (requires cryptography package)
+
+**📄 Alternative: Manual .env Configuration**
+
+For quick setup or CI/CD environments, create a `.env` file in the project root:
 
 ```env
 # SAP Connection Parameters
@@ -104,7 +128,24 @@ SAP_POOL_SIZE=10
 SAP_TRACE=0
 ```
 
+**🔄 Migration Between Methods**
+
+```bash
+# Migrate from .env to encrypted storage
+python -m sap_rfc_mcp_server.sap_security_manager migrate
+```
+
 ## 🚀 Quick Start
+
+### 🔐 Secure Configuration Setup (Recommended)
+
+```bash
+# Interactive secure configuration with the Security Manager
+python -m sap_rfc_mcp_server.sap_security_manager setup
+
+# Test your SAP connection
+python -m sap_rfc_mcp_server.sap_security_manager test
+```
 
 ### Smart Server Startup (Recommended)
 
@@ -264,6 +305,9 @@ code .  # Open in VS Code
 ### Development Tools Usage
 
 ```bash
+# Security configuration management
+python -m sap_rfc_mcp_server.sap_security_manager --help
+
 # Port management
 python tools/port_manager.py --help
 
@@ -301,7 +345,7 @@ sap-rfc-mcp-server/
 │   ├── metadata_cache.py       # Persistent caching system
 │   ├── config.py               # Configuration management
 │   ├── secure_config.py        # Secure configuration handling
-│   └── sap_security_manager.py # Security utilities
+│   └── sap_security_manager.py # Interactive security manager with multiple storage methods
 ├── tests/                      # Test suite
 ├── examples/                   # Usage examples
 ├── docs/                       # Documentation

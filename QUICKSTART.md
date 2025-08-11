@@ -23,7 +23,10 @@ cd sap-rfc-mcp-server
 # 2. Run the automated setup script (includes SAP NetWeaver RFC SDK checking)
 python tools/setup_dev.py
 
-# 3. Configure your SAP connection
+# 3. Configure your SAP connection (Security Manager - Recommended)
+python -m sap_rfc_mcp_server.sap_security_manager setup
+
+# Alternative: Quick .env configuration
 # Edit the .env file with your SAP details
 notepad .env  # Windows
 nano .env     # Linux/Mac
@@ -60,6 +63,28 @@ pip install -e ".[dev]"  # For development
 
 ### 3. Configure SAP Connection
 
+**🔐 Option 1: Interactive Security Manager (Recommended)**
+
+Use the secure interactive configuration tool:
+```bash
+# Secure interactive setup
+python -m sap_rfc_mcp_server.sap_security_manager setup
+
+# Test your connection
+python -m sap_rfc_mcp_server.sap_security_manager test
+
+# View configuration status
+python -m sap_rfc_mcp_server.sap_security_manager info
+```
+
+The Security Manager supports multiple secure storage methods:
+- **Environment Variables**: Direct system environment
+- **.env Files**: File-based configuration
+- **System Keyring**: OS credential manager
+- **Encrypted Files**: Password-protected storage
+
+**📄 Option 2: Manual .env Configuration**
+
 Copy the environment template:
 ```bash
 cp .env.template .env
@@ -73,6 +98,13 @@ SAP_CLIENT=100
 SAP_USER=your-username
 SAP_PASSWD=your-password
 SAP_LANG=EN
+```
+
+**🔄 Option 3: Migration Between Methods**
+
+```bash
+# Migrate from .env to more secure storage
+python -m sap_rfc_mcp_server.sap_security_manager migrate
 ```
 
 ### 4. Test Connection
@@ -150,6 +182,68 @@ python examples/basic_usage.py
 pytest tests/ -v
 ```
 
+## [SHIELD] Security Configuration Details
+
+The SAP Security Manager provides multiple secure methods for storing your SAP credentials:
+
+### Interactive Setup
+```bash
+# Launch interactive security setup
+python -m sap_rfc_mcp_server.sap_security_manager setup
+```
+
+This will guide you through:
+1. **Connection Method Selection**: Choose your preferred storage method
+2. **Credential Input**: Secure entry of SAP connection details
+3. **Method Configuration**: Setup method-specific options
+4. **Connection Testing**: Validate your configuration with SAP system
+
+### Available Storage Methods
+
+#### 1. Environment Variables (Always Available)
+- Direct system environment variables
+- Highest security for production systems
+- No additional dependencies required
+
+#### 2. .env Files (Simple File-Based)
+- Plain text file configuration
+- Good for development environments
+- Requires `python-dotenv` package
+
+#### 3. System Keyring (OS Credential Manager)
+- Uses operating system's credential store
+- Windows Credential Manager / macOS Keychain / Linux Secret Service
+- Requires `keyring` package
+
+#### 4. Encrypted Files (Password-Protected)
+- AES-256 encrypted credential storage
+- Password-protected access
+- Requires `cryptography` package
+
+### Security Commands
+
+```bash
+# Check current configuration status
+python -m sap_rfc_mcp_server.sap_security_manager info
+
+# Test SAP connection with validation
+python -m sap_rfc_mcp_server.sap_security_manager test
+
+# Migrate between storage methods
+python -m sap_rfc_mcp_server.sap_security_manager migrate
+```
+
+### Security Best Practices
+
+1. **Use Environment Variables or Encrypted Files** for production
+2. **Use System Keyring** for personal development machines
+3. **Use .env Files** only for development/testing
+4. **Never commit credentials** to version control
+5. **Regularly rotate SAP passwords** and update configuration
+
+## [ALERT] Troubleshooting
+```
+
 ### 4. API Documentation Test
 ```bash
 # Start HTTP server and test API docs
@@ -193,10 +287,11 @@ Error: SAP NetWeaver RFC SDK prerequisites not met!
 Error: Connection to SAP system failed
 ```
 **Solution**:
-- Check your SAP connection parameters in `.env`
+- Check your SAP connection parameters using: `python -m sap_rfc_mcp_server.sap_security_manager info`
+- Test connection with: `python -m sap_rfc_mcp_server.sap_security_manager test`
 - Verify network connectivity to SAP server
 - Ensure SAP user has RFC authorization
-- Run `python tools/check_config.py` for configuration analysis
+- Run `python tools/check_config.py` for detailed configuration analysis
 
 #### Import Errors
 ```
@@ -227,8 +322,8 @@ Error: DATA_BUFFER_EXCEEDED when reading large tables
 If you encounter issues:
 
 1. **Check the logs**: Look for error messages in the console output
-2. **Verify configuration**: Double-check your `.env` file
-3. **Test connectivity**: Use SAP GUI or other tools to verify connection
+2. **Verify configuration**: Use `python -m sap_rfc_mcp_server.sap_security_manager info` to check your setup
+3. **Test connectivity**: Use `python -m sap_rfc_mcp_server.sap_security_manager test` for connection validation
 4. **Check documentation**: See the full documentation in `README.md`
 5. **Ask for help**: Open an issue on GitHub
 
