@@ -34,42 +34,51 @@ cd <your-projects-root>/sap-rfc-mcp-server
 
 ## [WRENCH] Method 1: MCP Client Integration (Recommended)
 
-### Step 1: Install MCP Extension for VS Code
+### Step 1: Enable MCP Support in VS Code
 
-Search for and install the **"Model Context Protocol"** extension in VS Code:
+**MCP servers are now natively supported in VS Code 2025!** No additional extensions are required.
 
-1. Open VS Code
-2. Go to Extensions (Ctrl+Shift+X)
-3. Search for "Model Context Protocol" or "MCP"
-4. Install the official MCP extension
+1. Ensure you have VS Code version 1.95+ (2024 November release or later)
+2. MCP support is built into VS Code's agent mode and GitHub Copilot integration
 
-### Step 2: Configure MCP Client
+### Step 2: Configure MCP Server
 
-Create/edit your VS Code MCP configuration:
+Create your VS Code MCP configuration using the latest specification:
 
-**File: `.vscode/settings.json`**
+**File: `.vscode/mcp.json`** (New 2025 format)
 ```json
 {
-  "mcp.servers": {
+  "servers": {
     "sap-rfc-server": {
       "command": "./venv/Scripts/python.exe",
       "args": ["-m", "sap_rfc_mcp_server.server"],
-      "cwd": "./sap-rfc-mcp-server",
+      "cwd": "./",
       "env": {
-        "SAP_RFC_MCP_CONFIG": "./sap-rfc-mcp-server/.env"
+        "SAP_RFC_MCP_CONFIG": "./.env"
       }
     }
-  },
-  "mcp.trace": "verbose"
+  }
 }
 ```
+
+**⚠️ Important Changes in 2025:**
+- **New location**: `.vscode/mcp.json` (replaces `settings.json` configuration)
+- **New structure**: `"servers"` instead of `"mcp.servers"`
+- **Workspace isolation**: MCP configurations are now workspace-specific
+- **Better security**: Separated from general VS Code settings
 
 ### Step 3: Test MCP Integration
 
 1. Restart VS Code
-2. Open Command Palette (Ctrl+Shift+P)
-3. Type "MCP: List Available Tools"
-4. You should see SAP RFC tools available
+2. Open the workspace containing your `.vscode/mcp.json` file
+3. Enable GitHub Copilot agent mode (if using Copilot)
+4. The SAP RFC MCP server will be automatically available to agent mode
+5. Test by asking Copilot to "get SAP system information" or similar queries
+
+**🔍 Verification:**
+- Check VS Code status bar for MCP server indicators
+- Look for SAP RFC tools in agent mode tool palette
+- MCP server logs will appear in VS Code's output panel (select "MCP" channel)
 
 ## [GLOBE] Method 2: HTTP API Integration
 

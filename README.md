@@ -289,7 +289,56 @@ python tools/test_direct_sap.py
 python tools/test_metadata_stdio.py
 ```
 
-## 🔧 Development
+## �️ VS Code Integration (MCP 2025)
+
+The SAP RFC MCP server integrates natively with VS Code through the Model Context Protocol for enhanced AI-assisted development.
+
+### Quick VS Code Setup
+
+```bash
+# Automated setup creates .vscode/mcp.json configuration
+python tools/setup_dev.py
+```
+
+### Manual VS Code MCP Configuration
+
+Create `.vscode/mcp.json` in your workspace:
+
+```json
+{
+  "servers": {
+    "sap-rfc-server": {
+      "command": "./venv/Scripts/python.exe",
+      "args": ["-m", "sap_rfc_mcp_server.server"],
+      "cwd": "./",
+      "env": {
+        "SAP_RFC_MCP_CONFIG": "./.env"
+      }
+    }
+  }
+}
+```
+
+### Features Available in VS Code
+
+- **🤖 Agent Mode Integration**: SAP tools available to VS Code's built-in agent
+- **🧠 GitHub Copilot Enhancement**: Copilot can access SAP data and metadata
+- **📁 Workspace-Specific**: MCP configuration isolated per workspace
+- **🔍 Auto-Discovery**: VS Code automatically loads MCP servers on workspace open
+
+### Usage in VS Code
+
+1. Open workspace with `.vscode/mcp.json` configuration
+2. Enable GitHub Copilot agent mode (if using Copilot)
+3. Ask questions like:
+   - "Get SAP system information"
+   - "Search for SAP functions containing 'USER'"
+   - "Show metadata for RFC_READ_TABLE function"
+   - "List SAP tables starting with 'T0'"
+
+**📖 Complete Guide**: See [VS Code Integration Guide](docs/VSCODE_INTEGRATION_GUIDE.md) for detailed setup instructions.
+
+## �🔧 Development
 
 ### Quick Development Setup
 

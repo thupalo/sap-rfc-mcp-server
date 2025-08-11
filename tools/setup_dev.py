@@ -256,10 +256,6 @@ def setup_vs_code():
     project_root = Path(__file__).parent.parent
     vscode_dir = project_root / ".vscode"
 
-    if vscode_dir.exists():
-        print(f"[OK] VS Code configuration already exists: {vscode_dir}")
-        return True
-
     # Create .vscode directory
     vscode_dir.mkdir(exist_ok=True)
 
@@ -280,10 +276,28 @@ def setup_vs_code():
 
     with open(vscode_dir / "settings.json", "w") as f:
         import json
-
         json.dump(settings, f, indent=4)
 
+    # Create MCP configuration (VS Code 2025 format)
+    mcp_config = {
+        "servers": {
+            "sap-rfc-server": {
+                "command": "./venv/Scripts/python.exe",
+                "args": ["-m", "sap_rfc_mcp_server.server"],
+                "cwd": "./",
+                "env": {
+                    "SAP_RFC_MCP_CONFIG": "./.env"
+                }
+            }
+        }
+    }
+
+    with open(vscode_dir / "mcp.json", "w") as f:
+        import json
+        json.dump(mcp_config, f, indent=2)
+
     print(f"[OK] VS Code settings created: {vscode_dir / 'settings.json'}")
+    print(f"[OK] VS Code MCP config created: {vscode_dir / 'mcp.json'}")
     return True
 
 

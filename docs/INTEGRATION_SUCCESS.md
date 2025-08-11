@@ -19,8 +19,9 @@ Your SAP RFC MCP Server is now fully integrated with VS Code and ready for use a
 - **Quick Functions**: ✅ sap_info(), search_rfc(), rfc_meta(), etc.
 - **Import Ready**: ✅ Ready for use in VS Code Python scripts
 
-### ✅ VS Code Configuration
-- **Settings**: ✅ `.vscode/settings.json` configured with MCP servers
+### ✅ VS Code Configuration (2025 Format)
+- **Settings**: ✅ `.vscode/settings.json` configured with Python environment
+- **MCP Config**: ✅ `.vscode/mcp.json` with SAP RFC MCP server (latest 2025 format)
 - **Tasks**: ✅ `.vscode/tasks.json` with start/stop server tasks
 - **Snippets**: ✅ `.vscode/python.json` with SAP-specific code snippets
 - **PowerShell Script**: ✅ `start_sap_mcp_server.ps1` for easy server management
@@ -73,8 +74,14 @@ print(f"Function: {meta['FUNC_NAME']}")
 - `saptable` - SAP table data retrieval
 - `sapinfo` - System information query
 
-### 4. 📡 MCP Protocol (GitHub Copilot Integration)
-Configure in VS Code settings to use SAP MCP server as a tool for GitHub Copilot.
+### 4. 📡 MCP Protocol (VS Code 2025 Integration)
+**Native VS Code MCP Support:** The SAP MCP server is automatically available in VS Code agent mode through the `.vscode/mcp.json` configuration.
+
+**Features:**
+- ✅ **Agent Mode Integration**: SAP tools available to VS Code's built-in agent
+- ✅ **GitHub Copilot Enhancement**: Copilot can access SAP data and metadata
+- ✅ **Workspace-Specific**: MCP configuration isolated per workspace
+- ✅ **Auto-Discovery**: VS Code automatically loads MCP servers on workspace open
 
 ## 🔧 Available SAP MCP Tools
 
@@ -141,15 +148,16 @@ print(f"Found {len(functions)} user functions")
 - ✅ **Performance**: 98%+ cache improvements (50x+ speedup)
 - ✅ **HTTP API**: 8 MCP tools accessible via REST API
 - ✅ **Development Helper**: Python module ready for import
-- ✅ **VS Code Integration**: Tasks, snippets, and MCP configuration complete
-- ✅ **Documentation**: Comprehensive setup and usage guides created
+- ✅ **VS Code Integration**: Tasks, snippets, and native MCP 2025 configuration complete
+- ✅ **Documentation**: Comprehensive setup and usage guides updated for 2025
 
 ## 🔗 Key Files Created
 
-- `VSCODE_INTEGRATION_GUIDE.md` - Complete setup documentation
+- `VSCODE_INTEGRATION_GUIDE.md` - Complete setup documentation (updated for VS Code 2025)
 - `sap_dev_helper.py` - Python development utilities
 - `start_sap_mcp_server.ps1` - PowerShell server launcher
-- `.vscode/settings.json` - VS Code MCP configuration
+- `.vscode/settings.json` - VS Code Python environment configuration
+- `.vscode/mcp.json` - MCP server configuration (VS Code 2025 format)
 - `.vscode/tasks.json` - Server management tasks
 - `.vscode/python.json` - SAP code snippets
 - `test_final_integration.py` - Integration verification

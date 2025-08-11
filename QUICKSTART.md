@@ -241,6 +241,42 @@ python -m sap_rfc_mcp_server.sap_security_manager migrate
 4. **Never commit credentials** to version control
 5. **Regularly rotate SAP passwords** and update configuration
 
+## [COMPUTER] VS Code Integration (MCP 2025)
+
+### Quick VS Code Setup
+
+```bash
+# Automated setup creates proper MCP configuration
+python tools/setup_dev.py
+```
+
+This creates `.vscode/mcp.json`:
+```json
+{
+  "servers": {
+    "sap-rfc-server": {
+      "command": "./venv/Scripts/python.exe",
+      "args": ["-m", "sap_rfc_mcp_server.server"],
+      "cwd": "./",
+      "env": {
+        "SAP_RFC_MCP_CONFIG": "./.env"
+      }
+    }
+  }
+}
+```
+
+### Using SAP MCP in VS Code
+
+1. **Open workspace** with `.vscode/mcp.json`
+2. **Enable agent mode** (if using GitHub Copilot)
+3. **Ask questions** like:
+   - "Get SAP system information"
+   - "Search for functions containing 'TABLE'"
+   - "Show RFC_READ_TABLE metadata"
+
+**📖 Complete Guide**: [VS Code Integration Guide](docs/VSCODE_INTEGRATION_GUIDE.md)
+
 ## [ALERT] Troubleshooting
 ```
 

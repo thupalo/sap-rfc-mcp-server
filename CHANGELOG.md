@@ -5,6 +5,24 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.0] - 2025-08-11
+
+### Added
+- 🖥️ VS Code 2025 MCP integration with native `.vscode/mcp.json` configuration
+- Updated documentation for latest VS Code MCP server specifications
+- Enhanced development setup script with automatic MCP configuration generation
+
+### Changed
+- 📄 Updated VS Code Integration Guide for 2025 MCP format
+- Migrated from `settings.json` MCP configuration to dedicated `.vscode/mcp.json`
+- Improved workspace isolation and security for MCP server configurations
+- Updated README with VS Code 2025 integration section
+
+### Documentation
+- Updated QUICKSTART guide with VS Code MCP integration section
+- Enhanced setup documentation with latest configuration formats
+- Added migration notes from legacy MCP configuration methods
+
 ## [1.0.0] - 2025-08-08
 
 ### Added
