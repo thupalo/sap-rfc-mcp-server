@@ -52,11 +52,11 @@ Create/edit your VS Code MCP configuration:
 {
   "mcp.servers": {
     "sap-rfc-server": {
-      "command": "C:/Users/<user>/Documents/Projects/sap-rfc-mcp-server/venv/Scripts/python.exe",
+      "command": "./venv/Scripts/python.exe",
       "args": ["-m", "sap_rfc_mcp_server.server"],
-      "cwd": "C:/Users/<user>/Documents/Projects/sap-rfc-mcp-server",
+      "cwd": "./sap-rfc-mcp-server",
       "env": {
-        "SAP_RFC_MCP_CONFIG": "C:/Users/<user>/Documents/Projects/sap-rfc-mcp-server/.env"
+        "SAP_RFC_MCP_CONFIG": "./sap-rfc-mcp-server/.env"
       }
     }
   },
