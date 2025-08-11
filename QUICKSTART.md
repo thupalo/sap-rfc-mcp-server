@@ -79,7 +79,7 @@ python -m sap_rfc_mcp_server.sap_security_manager info
 
 The Security Manager supports multiple secure storage methods:
 - **Environment Variables**: Direct system environment
-- **.env Files**: File-based configuration  
+- **.env Files**: File-based configuration
 - **System Keyring**: OS credential manager
 - **Encrypted Files**: Password-protected storage
 
