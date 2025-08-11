@@ -92,11 +92,11 @@ Configure in VS Code settings to use SAP MCP server as a tool for GitHub Copilot
 ### 1. **Start Using in VS Code**
 ```powershell
 # 1. Open this project in VS Code
-cd "C:\Users\tadeusz.hupalo\Documents\Projects\sap-rfc-mcp-server"
+cd "<your-project-path-root>\sap-rfc-mcp-server"
 code .
 
 # 2. Start SAP MCP Server (use VS Code task or PowerShell)
-.\start_sap_mcp_server.ps1
+.\tools\start_sap_mcp_server.ps1
 
 # 3. Create Python script and import helper
 ```
@@ -126,7 +126,7 @@ print("Available company codes:", codes)
 import requests
 
 # Call any SAP function via HTTP
-response = requests.post("http://127.0.0.1:8001/mcp/call_tool", json={
+response = requests.post("http://127.0.0.1:8000/mcp/call_tool", json={
     "name": "get_rfc_functions",
     "arguments": {"search_pattern": "USER"}
 })

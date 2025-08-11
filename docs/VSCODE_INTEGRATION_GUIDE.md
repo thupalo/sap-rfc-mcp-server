@@ -18,7 +18,7 @@ Your SAP RFC MCP server is already installed and working! Let's verify:
 
 ```bash
 # Check if the server is working
-cd C:/Users/tadeusz.hupalo/Documents/Projects/sap-rfc-mcp-server
+cd <your-projects-root>/sap-rfc-mcp-server
 ./venv/Scripts/python.exe -m sap_rfc_mcp_server.server --version
 
 # Test HTTP server
@@ -52,11 +52,11 @@ Create/edit your VS Code MCP configuration:
 {
   "mcp.servers": {
     "sap-rfc-server": {
-      "command": "C:/Users/tadeusz.hupalo/Documents/Projects/sap-rfc-mcp-server/venv/Scripts/python.exe",
+      "command": "C:/Users/<user>/Documents/Projects/sap-rfc-mcp-server/venv/Scripts/python.exe",
       "args": ["-m", "sap_rfc_mcp_server.server"],
-      "cwd": "C:/Users/tadeusz.hupalo/Documents/Projects/sap-rfc-mcp-server",
+      "cwd": "C:/Users/<user>/Documents/Projects/sap-rfc-mcp-server",
       "env": {
-        "SAP_RFC_MCP_CONFIG": "C:/Users/tadeusz.hupalo/Documents/Projects/sap-rfc-mcp-server/.env"
+        "SAP_RFC_MCP_CONFIG": "C:/Users/<user>/Documents/Projects/sap-rfc-mcp-server/.env"
       }
     }
   },
@@ -88,7 +88,7 @@ param(
 
 Write-Host "[ROCKET] Starting SAP RFC MCP Server..." -ForegroundColor Green
 
-$serverPath = "C:/Users/tadeusz.hupalo/Documents/Projects/sap-rfc-mcp-server"
+$serverPath = "C:/Users/<user>/Documents/Projects/sap-rfc-mcp-server"
 $pythonExe = "$serverPath/venv/Scripts/python.exe"
 
 # Change to server directory

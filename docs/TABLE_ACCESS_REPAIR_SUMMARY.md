@@ -169,7 +169,7 @@ Some tables may require additional authorization:
 ### Start MCP Server
 ```powershell
 # STDIO Mode
-cd "C:/Users/tadeusz.hupalo/Documents/Projects/sap-rfc-mcp-server"
+cd "<your-project-path_root>/sap-rfc-mcp-server"
 ./venv/Scripts/Activate.ps1
 python -m sap_rfc_mcp_server.server
 

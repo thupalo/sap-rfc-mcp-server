@@ -9,7 +9,7 @@ import sys
 # Add parent directory to path since we're in tools folder
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from sap_rfc_mcp_server.config import SAPConfig
+from sap_rfc_mcp_server.config import SAPConfig  # noqa: E402
 
 print("[CONFIG] Current SAP Configuration Analysis")
 print("=" * 45)
@@ -22,27 +22,6 @@ try:
     print(f"User:              {config.user}")
 
     print("-" * 35)
-
-    expected_client = "010"
-    actual_client = config.client
-
-    print(f"Expected Client: {expected_client}")
-    print(f"Actual Client:   {actual_client}")
-
-    if actual_client != expected_client:
-        print("\n[ERROR] CLIENT MISMATCH DETECTED!")
-        print(f"Currently connected to client {actual_client}")
-        print("\n[CONFIG] Solution:")
-        print(f"1. Update .env file: SAP_CLIENT={expected_client}")
-        print("2. Restart SAP RFC MCP Server")
-        print("3. Verify table access")
-
-        print("\n[NOTE] Required .env change:")
-        print(f"   Change: SAP_CLIENT={actual_client}")
-        print(f"   To:     SAP_CLIENT={expected_client}")
-    else:
-        print("\n[OK] Client configuration is correct")
-        print("Table access issue may be due to authorization")
 
     # Show connection parameters that will be used
     print("\n[INFO] Connection Parameters:")
