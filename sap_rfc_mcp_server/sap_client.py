@@ -55,9 +55,10 @@ class SAPRFCManager:
     def _setup_environment(self):
         """Set up SAP RFC environment variables."""
         if not os.getenv("SAPNWRFC_HOME"):
-            os.environ["SAPNWRFC_HOME"] = "C:\\SAPNWRFC_750"
-        
-        sap_lib_path = "C:\\SAPNWRFC_750\\lib"
+            raise SAPConnectionError(
+                "The environment variable SAPNWRFC_HOME is not set. Please install SAP NetWeaver RFC SDK and set the environment variable."
+            )
+        sap_lib_path = os.path.join(os.environ["SAPNWRFC_HOME"], "lib")
         if sap_lib_path not in os.environ.get("PATH", ""):
             os.environ["PATH"] = f"{sap_lib_path};{os.environ.get('PATH', '')}"
     
@@ -85,18 +86,6 @@ class SAPRFCManager:
                     logger.info("SAP RFC connection closed")
                 except Exception as e:
                     logger.warning(f"Error closing connection: {e}")
-    
-    def call_rfc_function(self, function_name: str, **kwargs) -> Dict[str, Any]:
-        """Call an RFC function with parameters."""
-        with self.connection() as conn:
-            try:
-                logger.info(f"Calling RFC function: {function_name}")
-                result = conn.call(function_name, **kwargs)
-                logger.info(f"RFC function {function_name} completed successfully")
-                return result
-            except Exception as e:
-                logger.error(f"Error calling RFC function {function_name}: {e}")
-                raise SAPConnectionError(f"RFC call failed: {e}")
     
     def get_system_info(self) -> Dict[str, Any]:
         """Get SAP system information using RFC_SYSTEM_INFO."""
@@ -161,3 +150,16 @@ class SAPRFCManager:
         except Exception as e:
             logger.error(f"Error querying RFC functions: {e}")
             raise SAPConnectionError(f"Function query failed: {e}")
+
+    def call_rfc_function(self, function_name: str, **kwargs) -> Dict[str, Any]:
+        """Call an RFC function with parameters."""
+        with self.connection() as conn:
+            try:
+                logger.info(f"Calling RFC function: {function_name}")
+                result = conn.call(function_name, **kwargs)
+                logger.info(f"RFC function {function_name} completed successfully")
+                return result
+            except Exception as e:
+                logger.error(f"Error calling RFC function {function_name}: {e}")
+                raise SAPConnectionError(f"RFC call failed: {e}")
+
